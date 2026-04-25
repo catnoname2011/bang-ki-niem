@@ -1,0 +1,132 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: "Segoe UI", sans-serif;
+
+    background: repeating-linear-gradient(
+        0deg,
+        #e8f5e9,
+        #e8f5e9 20px,
+        #e3f2e6 20px,
+        #e3f2e6 40px
+    );
+}
+
+.title {
+    text-align: center;
+    font-size: 42px;
+    font-weight: bold;
+    margin: 20px 0;
+    color: #2e7d32;
+}
+
+.menu-btn {
+    position: fixed;
+    top: 10px;
+    right: 15px;
+    font-size: 26px;
+    cursor: pointer;
+}
+
+.board {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: flex-start;
+    gap: 25px;
+    padding: 20px;
+}
+
+.note {
+    width: 120px;
+    height: 120px;
+    padding: 10px;
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    transform: rotate(var(--rotate));
+}
+
+.note-content {
+    position: relative;
+    z-index: 2;
+    font-size: 13px;
+}
+
+.pin {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.decor {
+    position: absolute;
+    font-size: 18px;
+    z-index: 1;
+}
+
+/* FORM */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.input-box {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    width: 280px;
+}
+
+.input-box input,
+.input-box textarea {
+    width: 100%;
+    margin-top: 8px;
+    padding: 6px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.input-box button {
+    margin-top: 10px;
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    background: #2e7d32;
+    color: white;
+}
+
+/* popup */
+.popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-box {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    width: 280px;
+    text-align: center;
+}
