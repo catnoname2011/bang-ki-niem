@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>9A1 Notes</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="menu-btn" onclick="openForm()">⋯</div>
+
+<div class="title">9A1</div>
+<div class="board" id="board"></div>
+
+<!-- FORM -->
+<div class="overlay" id="overlay" onclick="closeForm(event)">
+    <div class="input-box" onclick="event.stopPropagation()">
+        <b>Thêm lời chúc</b>
+        <input id="name" placeholder="Tên">
+        <textarea id="msg" placeholder="Lời chúc..."></textarea>
+        <button onclick="addNote()">Tạo 🎉</button>
+    </div>
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popup" onclick="closePopup()">
+    <div class="popup-box" id="popupText"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
