@@ -4,7 +4,7 @@ const decors = ["⭐","💖","✨","🌸","🍀","🎀"];
 
 let lastColors = [];
 
-/* USER ID */
+/* USER */
 let userId = localStorage.getItem("userId");
 if(!userId){
     userId = "u_" + Math.random().toString(36).substr(2,9);
@@ -38,7 +38,6 @@ function loadNotes(){
 function openForm(){
     overlay.style.display = "flex";
 }
-
 function closeForm(e){
     if(e.target.id === "overlay"){
         overlay.style.display = "none";
@@ -56,7 +55,6 @@ function createNote(noteData, index){
     note.style.background = color;
     note.style.setProperty("--rotate",(Math.random()*8-4)+"deg");
 
-    // pin
     const pin = document.createElement("div");
     pin.className = "pin";
     let pc;
@@ -64,14 +62,12 @@ function createNote(noteData, index){
     pin.style.background = pc;
     note.appendChild(pin);
 
-    // content
     const c = document.createElement("div");
     c.className = "note-content";
     c.innerHTML = `<b>${name}</b><br><small>Xem lời chúc 🎁</small>`;
     note.appendChild(c);
 
-    // decor
-    const pos = [[0,0],[90,0],[0,90],[90,90]];
+    const pos = [[0,0],[80,0],[0,80],[80,80]];
     for(let i=0;i<3;i++){
         const d = document.createElement("div");
         d.className = "decor";
@@ -82,17 +78,12 @@ function createNote(noteData, index){
         note.appendChild(d);
     }
 
-    // click xem
     note.onclick = () => showPopup(name + ": " + msg);
 
-    // xoá nếu là của mình
     if(owner === userId){
         const del = document.createElement("div");
         del.innerText = "❌";
-        del.style.position = "absolute";
-        del.style.top = "2px";
-        del.style.right = "5px";
-        del.style.cursor = "pointer";
+        del.className = "delete";
 
         del.onclick = (e)=>{
             e.stopPropagation();
@@ -121,12 +112,7 @@ function addNote(){
     }
 
     const notes = loadNotes();
-    notes.push({
-        name,
-        msg,
-        owner: userId
-    });
-
+    notes.push({name, msg, owner: userId});
     saveNotes(notes);
 
     overlay.style.display="none";
@@ -140,8 +126,8 @@ function addNote(){
 function renderNotes(){
     board.innerHTML = "";
     lastColors = [];
-    const notes = loadNotes();
 
+    const notes = loadNotes();
     notes.forEach((n,i)=>{
         board.appendChild(createNote(n,i));
     });
@@ -152,7 +138,6 @@ function showPopup(t){
     popupText.innerText = t;
     popup.style.display="flex";
 }
-
 function closePopup(){
     popup.style.display="none";
 }
