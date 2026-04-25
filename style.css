@@ -20,8 +20,7 @@ body {
 .title {
     text-align: center;
     font-size: 42px;
-    font-weight: bold;
-    margin: 20px 0;
+    margin: 15px 0;
     color: #2e7d32;
 }
 
@@ -29,10 +28,11 @@ body {
     position: fixed;
     top: 10px;
     right: 15px;
-    font-size: 26px;
+    font-size: 28px;
     cursor: pointer;
 }
 
+/* BOARD FIX */
 .board {
     flex: 1;
     display: flex;
@@ -40,13 +40,14 @@ body {
     justify-content: center;
     align-content: flex-start;
     gap: 25px;
-    padding: 20px;
+    padding: 15px;
 }
 
+/* NOTE */
 .note {
     width: 120px;
     height: 120px;
-    padding: 10px;
+    padding: 8px;
     border-radius: 10px;
     position: relative;
     cursor: pointer;
@@ -60,20 +61,32 @@ body {
     font-size: 13px;
 }
 
+/* PIN */
 .pin {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     position: absolute;
-    top: -7px;
+    top: -6px;
     left: 50%;
     transform: translateX(-50%);
 }
 
+/* DECOR */
 .decor {
     position: absolute;
     font-size: 18px;
     z-index: 1;
+}
+
+/* DELETE BUTTON */
+.note .delete {
+    position: absolute;
+    top: 2px;
+    right: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 3;
 }
 
 /* FORM */
@@ -89,16 +102,16 @@ body {
 
 .input-box {
     background: white;
-    padding: 20px;
-    border-radius: 14px;
-    width: 280px;
+    padding: 18px;
+    border-radius: 12px;
+    width: 300px;
 }
 
 .input-box input,
 .input-box textarea {
     width: 100%;
     margin-top: 8px;
-    padding: 6px;
+    padding: 8px;
     border-radius: 8px;
     border: 1px solid #ccc;
 }
@@ -113,7 +126,7 @@ body {
     color: white;
 }
 
-/* popup */
+/* POPUP */
 .popup {
     position: fixed;
     inset: 0;
@@ -126,7 +139,36 @@ body {
 .popup-box {
     background: white;
     padding: 20px;
-    border-radius: 16px;
+    border-radius: 14px;
     width: 280px;
     text-align: center;
+}
+
+/* ===== MOBILE FIX ===== */
+@media (max-width: 600px) {
+
+    .title {
+        font-size: 30px;
+    }
+
+    .note {
+        width: 95px;
+        height: 95px;
+    }
+
+    .note-content {
+        font-size: 11px;
+    }
+
+    .decor {
+        font-size: 16px;
+    }
+
+    .board {
+        gap: 15px;
+    }
+
+    .input-box {
+        width: 90%;
+    }
 }
