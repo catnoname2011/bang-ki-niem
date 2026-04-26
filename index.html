@@ -3,61 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>9A1 Memory Board</title>
+<title>9A1 Notes</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<canvas id="bgCanvas"></canvas>
+<div class="menu-btn" onclick="openForm()">⋯</div>
 
-<div class="app">
-
-    <!-- LEFT -->
-    <div class="main">
-        <div class="top-bar">
-            <div class="title">
-                9A1 ✨
-                <span>Quyết tâm đậu NV1</span>
-            </div>
-            <button onclick="openForm()">＋</button>
-        </div>
-
-        <div class="board" id="board"></div>
-    </div>
-
-    <!-- RIGHT -->
-    <div class="film-strip">
-        <div class="film-title">Kỷ niệm 🎞️</div>
-
-        <label class="upload-btn">
-            + Thêm ảnh/video
-            <input type="file" id="fileInput" accept="image/*,video/*" multiple hidden>
-        </label>
-
-        <div class="film-list" id="filmList"></div>
-    </div>
-
-</div>
+<div class="title">9A1</div>
+<div class="board" id="board"></div>
 
 <!-- FORM -->
 <div class="overlay" id="overlay" onclick="closeForm(event)">
     <div class="input-box" onclick="event.stopPropagation()">
-        <b>Viết lời chúc</b>
+        <b>Thêm lời chúc</b>
         <input id="name" placeholder="Tên">
         <textarea id="msg" placeholder="Lời chúc..."></textarea>
         <button onclick="addNote()">Tạo 🎉</button>
     </div>
 </div>
 
-<!-- POPUP NOTE -->
+<!-- POPUP -->
 <div class="popup" id="popup" onclick="closePopup()">
     <div class="popup-box" id="popupText"></div>
-</div>
-
-<!-- POPUP MEDIA -->
-<div class="popup" id="mediaPopup" onclick="closeMedia()">
-    <div class="popup-box" id="mediaContent"></div>
 </div>
 
 <script src="script.js"></script>
