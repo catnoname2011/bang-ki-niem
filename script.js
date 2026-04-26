@@ -1,209 +1,153 @@
 const noteColors = ["#fff9c4","#ffecb3","#ffcdd2","#bbdefb","#d1c4e9","#c8e6c9"];
 const pinColors = ["#e53935","#1e88e5","#fdd835","#8e24aa","#43a047"];
+const decors = ["⭐","💖","✨","🌸","🍀","🎀"];
 
-let userId = localStorage.getItem("userId") || ("u_"+Math.random().toString(36).substr(2,9));
-localStorage.setItem("userId", userId);
+let lastColors = [];
 
-function rand(a){ return a[Math.floor(Math.random()*a.length)]; }
-function getColor(){ return rand(noteColors); }
-function getPin(c){ let p; do{ p=rand(pinColors);}while(p===c); return p; }
+/* USER */
+let userId = localStorage.getItem("userId");
+if(!userId){
+    userId = "u_" + Math.random().toString(36).substr(2,9);
+    localStorage.setItem("userId", userId);
+}
 
-/* NOTES */
-function saveNotes(n){ localStorage.setItem("notes9A1", JSON.stringify(n)); }
-function loadNotes(){ return JSON.parse(localStorage.getItem("notes9A1")||"[]"); }
+/* UTIL */
+function rand(a){
+    return a[Math.floor(Math.random()*a.length)];
+}
 
-function openForm(){ overlay.style.display="flex"; }
-function closeForm(e){ if(e.target.id==="overlay") overlay.style.display="none"; }
+function getColor(){
+    let c;
+    do{
+        c = rand(noteColors);
+    }while(lastColors.slice(-4).includes(c));
+    lastColors.push(c);
+    return c;
+}
 
-function createNote(n,i){
+/* STORAGE */
+function saveNotes(data){
+    localStorage.setItem("notes9A1", JSON.stringify(data));
+}
+
+function loadNotes(){
+    return JSON.parse(localStorage.getItem("notes9A1") || "[]");
+}
+
+/* FORM */
+function openForm(){
+    overlay.style.display = "flex";
+}
+function closeForm(e){
+    if(e.target.id === "overlay"){
+        overlay.style.display = "none";
+    }
+}
+
+/* CREATE NOTE */
+function createNote(noteData, index){
+    const {name, msg, owner} = noteData;
+
     const note = document.createElement("div");
-    note.className="note";
-    note.style.background=n.color;
-    note.style.left=n.x+"px";
-    note.style.top=n.y+"px";
+    note.className = "note";
 
-    const pin=document.createElement("div");
-    pin.className="pin";
-    pin.style.background=n.pinColor;
+    const color = getColor();
+    note.style.background = color;
+    note.style.setProperty("--rotate",(Math.random()*8-4)+"deg");
+
+    const pin = document.createElement("div");
+    pin.className = "pin";
+    let pc;
+    do{ pc = rand(pinColors); }while(pc===color);
+    pin.style.background = pc;
     note.appendChild(pin);
 
-    note.innerHTML+=`<b>${n.name}</b><br><small>Xem 🎁</small>`;
-    note.onclick=()=>showPopup(n.name,n.msg);
+    const c = document.createElement("div");
+    c.className = "note-content";
+    c.innerHTML = `<b>${name}</b><br><small>Xem lời chúc 🎁</small>`;
+    note.appendChild(c);
 
-    note.onmousedown = function(e){
-        let shiftX=e.clientX-note.offsetLeft;
-        let shiftY=e.clientY-note.offsetTop;
+    const pos = [[0,0],[80,0],[0,80],[80,80]];
+    for(let i=0;i<3;i++){
+        const d = document.createElement("div");
+        d.className = "decor";
+        d.innerText = rand(decors);
+        const p = rand(pos);
+        d.style.top = p[0]+"px";
+        d.style.left = p[1]+"px";
+        note.appendChild(d);
+    }
 
-        function move(x,y){
-            note.style.left=x-shiftX+"px";
-            note.style.top=y-shiftY+"px";
-        }
+    note.onclick = () => showPopup(name + ": " + msg);
 
-        function onMove(e){
-            move(e.pageX,e.pageY);
-        }
+    if(owner === userId){
+        const del = document.createElement("div");
+        del.innerText = "❌";
+        del.className = "delete";
 
-        document.addEventListener("mousemove",onMove);
-
-        document.onmouseup=()=>{
-            document.removeEventListener("mousemove",onMove);
-            document.onmouseup=null;
-
-            const notes=loadNotes();
-            notes[i].x=parseInt(note.style.left);
-            notes[i].y=parseInt(note.style.top);
-            saveNotes(notes);
+        del.onclick = (e)=>{
+            e.stopPropagation();
+            if(confirm("Xoá note này?")){
+                const notes = loadNotes();
+                notes.splice(index,1);
+                saveNotes(notes);
+                renderNotes();
+            }
         };
-    };
+
+        note.appendChild(del);
+    }
 
     return note;
 }
 
+/* ADD */
 function addNote(){
-    if(!nameInput.value||!msgInput.value) return alert("Nhập đủ!");
+    const name = nameInput.value.trim();
+    const msg = msgInput.value.trim();
 
-    const notes=loadNotes();
-    const color=getColor();
+    if(!name || !msg){
+        alert("Nhập đủ!");
+        return;
+    }
 
-    notes.push({
-        name:nameInput.value,
-        msg:msgInput.value,
-        owner:userId,
-        color,
-        pinColor:getPin(color),
-        x:100,
-        y:100
-    });
-
+    const notes = loadNotes();
+    notes.push({name, msg, owner: userId});
     saveNotes(notes);
-    renderNotes();
 
     overlay.style.display="none";
     nameInput.value="";
     msgInput.value="";
+
+    renderNotes();
 }
 
+/* RENDER */
 function renderNotes(){
-    board.innerHTML="";
-    loadNotes().forEach((n,i)=>board.appendChild(createNote(n,i)));
+    board.innerHTML = "";
+    lastColors = [];
+
+    const notes = loadNotes();
+    notes.forEach((n,i)=>{
+        board.appendChild(createNote(n,i));
+    });
 }
 
-function showPopup(name,msg){
-    popupText.innerHTML=`<h3>${name}</h3><p>${msg}</p>`;
+/* POPUP */
+function showPopup(t){
+    popupText.innerText = t;
     popup.style.display="flex";
 }
-function closePopup(){ popup.style.display="none"; }
-
-/* MEDIA */
-function saveMedia(d){ localStorage.setItem("film9A1", JSON.stringify(d)); }
-function loadMedia(){ return JSON.parse(localStorage.getItem("film9A1")||"[]"); }
-
-function renderMedia(){
-    filmList.innerHTML="";
-    loadMedia().forEach(m=>{
-        const div=document.createElement("div");
-        div.className="film-item";
-
-        if(m.type==="image"){
-            div.innerHTML=`<img src="${m.src}">`;
-        }else{
-            div.innerHTML=`<video src="${m.src}"></video>`;
-        }
-
-        div.onclick=()=>openMedia(m);
-        filmList.appendChild(div);
-    });
+function closePopup(){
+    popup.style.display="none";
 }
-
-/* CLOUDINARY UPLOAD (đã gắn sẵn) */
-fileInput.onchange = async function(){
-    const files = this.files;
-    if(!files.length) return;
-
-    for(let file of files){
-
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", "ml_default");
-
-        try{
-            const res = await fetch(
-                "https://api.cloudinary.com/v1_1/dob1z31jl/auto/upload",
-                {
-                    method: "POST",
-                    body: formData
-                }
-            );
-
-            const dataRes = await res.json();
-
-            const data = loadMedia();
-
-            data.push({
-                src: dataRes.secure_url,
-                type: file.type.startsWith("video") ? "video" : "image"
-            });
-
-            saveMedia(data);
-            renderMedia();
-
-        }catch(err){
-            alert("Upload lỗi 😢");
-            console.error(err);
-        }
-    }
-};
-
-function openMedia(m){
-    if(m.type==="image"){
-        mediaContent.innerHTML=`<img src="${m.src}" style="width:100%">`;
-    }else{
-        mediaContent.innerHTML=`<video src="${m.src}" controls autoplay style="width:100%"></video>`;
-    }
-    mediaPopup.style.display="flex";
-}
-
-function closeMedia(){
-    mediaPopup.style.display="none";
-}
-
-/* BG */
-const canvas=document.getElementById("bgCanvas");
-const ctx=canvas.getContext("2d");
-canvas.width=innerWidth;
-canvas.height=innerHeight;
-
-let p=[];
-for(let i=0;i<40;i++){
-    p.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*2});
-}
-
-function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    p.forEach(a=>{
-        a.y+=0.2;
-        if(a.y>canvas.height) a.y=0;
-        ctx.beginPath();
-        ctx.arc(a.x,a.y,a.r,0,Math.PI*2);
-        ctx.fillStyle="rgba(255,255,255,0.5)";
-        ctx.fill();
-    });
-    requestAnimationFrame(draw);
-}
-draw();
 
 /* INIT */
-const board=document.getElementById("board");
-const overlay=document.getElementById("overlay");
-const nameInput=document.getElementById("name");
-const msgInput=document.getElementById("msg");
-const popup=document.getElementById("popup");
-const popupText=document.getElementById("popupText");
-
-const filmList=document.getElementById("filmList");
-const fileInput=document.getElementById("fileInput");
-const mediaPopup=document.getElementById("mediaPopup");
-const mediaContent=document.getElementById("mediaContent");
+const board = document.getElementById("board");
+const overlay = document.getElementById("overlay");
+const nameInput = document.getElementById("name");
+const msgInput = document.getElementById("msg");
+const popup = document.getElementById("popup");
+const popupText = document.getElementById("popupText");
 
 renderNotes();
-renderMedia();
