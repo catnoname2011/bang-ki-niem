@@ -94,7 +94,7 @@ function showPopup(name,msg){
 }
 function closePopup(){ popup.style.display="none"; }
 
-/* MEDIA STORAGE */
+/* MEDIA */
 function saveMedia(d){ localStorage.setItem("film9A1", JSON.stringify(d)); }
 function loadMedia(){ return JSON.parse(localStorage.getItem("film9A1")||"[]"); }
 
@@ -115,7 +115,7 @@ function renderMedia(){
     });
 }
 
-/* CLOUDINARY UPLOAD */
+/* CLOUDINARY UPLOAD (đã gắn sẵn) */
 fileInput.onchange = async function(){
     const files = this.files;
     if(!files.length) return;
@@ -124,27 +124,33 @@ fileInput.onchange = async function(){
 
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("upload_preset", "YOUR_UPLOAD_PRESET");
+        formData.append("upload_preset", "ml_default");
 
-        const res = await fetch(
-            "https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/auto/upload",
-            {
-                method: "POST",
-                body: formData
-            }
-        );
+        try{
+            const res = await fetch(
+                "https://api.cloudinary.com/v1_1/dob1z31jl/auto/upload",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
 
-        const dataRes = await res.json();
+            const dataRes = await res.json();
 
-        const data = loadMedia();
+            const data = loadMedia();
 
-        data.push({
-            src: dataRes.secure_url,
-            type: file.type.startsWith("video") ? "video" : "image"
-        });
+            data.push({
+                src: dataRes.secure_url,
+                type: file.type.startsWith("video") ? "video" : "image"
+            });
 
-        saveMedia(data);
-        renderMedia();
+            saveMedia(data);
+            renderMedia();
+
+        }catch(err){
+            alert("Upload lỗi 😢");
+            console.error(err);
+        }
     }
 };
 
@@ -161,7 +167,7 @@ function closeMedia(){
     mediaPopup.style.display="none";
 }
 
-/* BG PARTICLES */
+/* BG */
 const canvas=document.getElementById("bgCanvas");
 const ctx=canvas.getContext("2d");
 canvas.width=innerWidth;
