@@ -2,6 +2,14 @@ body {
     margin:0;
     font-family:"Segoe UI", sans-serif;
     overflow:hidden;
+
+    background: repeating-linear-gradient(
+        0deg,
+        #e8f5e9,
+        #e8f5e9 25px,
+        #dcedc8 25px,
+        #dcedc8 50px
+    );
 }
 
 .app {
@@ -23,16 +31,24 @@ body {
 }
 
 .title {
-    font-size:32px;
+    font-size:36px;
+    font-weight:800;
     color:#2e7d32;
+    display:flex;
+    flex-direction:column;
 }
 
+.title span {
+    font-size:14px;
+    border-top:2px solid #2e7d32;
+}
+
+/* BOARD */
 .board {
     position:relative;
     flex:1;
 }
 
-/* NOTE */
 .note {
     position:absolute;
     width:150px;
@@ -40,16 +56,7 @@ body {
     padding:12px;
     border-radius:14px;
     cursor:grab;
-
-    box-shadow:
-        0 10px 25px rgba(0,0,0,0.3),
-        inset 0 0 20px rgba(255,255,255,0.4);
-
-    transition:0.2s;
-}
-
-.note:hover {
-    transform:scale(1.08);
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
 }
 
 .pin {
@@ -62,41 +69,15 @@ body {
     transform:translateX(-50%);
 }
 
-/* RIGHT FILM */
+/* FILM */
 .film-strip {
-    width:210px;
-    background:#111;
+    width:220px;
+    background:#0a0a0a;
     color:white;
     display:flex;
     flex-direction:column;
-    padding:10px;
+    padding:12px;
     position:relative;
-}
-
-.film-strip::before,
-.film-strip::after {
-    content:"";
-    position:absolute;
-    top:0;
-    bottom:0;
-    width:12px;
-    background:repeating-linear-gradient(
-        to bottom,
-        transparent 0 15px,
-        #000 15px 25px
-    );
-}
-
-.film-strip::before { left:0; }
-.film-strip::after { right:0; }
-
-.upload-btn {
-    background:#222;
-    padding:6px;
-    text-align:center;
-    border-radius:6px;
-    cursor:pointer;
-    margin-bottom:10px;
 }
 
 .film-list {
@@ -108,8 +89,7 @@ body {
 }
 
 .film-item {
-    background:#000;
-    border-radius:6px;
+    border-radius:8px;
     overflow:hidden;
     cursor:pointer;
 }
@@ -130,10 +110,10 @@ body {
 }
 
 .popup-box {
-    background:white;
-    padding:20px;
+    background:black;
+    padding:10px;
     border-radius:12px;
-    width:300px;
+    width:320px;
 }
 
 /* FORM */
@@ -153,14 +133,6 @@ body {
     width:300px;
 }
 
-.input-box input,
-.input-box textarea {
-    width:100%;
-    margin-top:8px;
-    padding:8px;
-}
-
-/* BG */
 #bgCanvas {
     position:fixed;
     inset:0;
