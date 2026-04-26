@@ -1,11 +1,10 @@
-const noteColors = ["#fff9c4","#ffecb3","#ffcdd2","#bbdefb","#d1c4e9","#c8e6c9","#ffe0b2","#f8bbd0"];
-const pinColors = ["#e53935","#1e88e5","#fdd835","#8e24aa","#43a047","#fb8c00"];
+const noteColors = ["#fff9c4","#ffecb3","#ffcdd2","#bbdefb","#d1c4e9","#c8e6c9"];
+const pinColors = ["#e53935","#1e88e5","#fdd835","#8e24aa","#43a047"];
 
 let userId = localStorage.getItem("userId") || ("u_"+Math.random().toString(36).substr(2,9));
 localStorage.setItem("userId", userId);
 
 function rand(a){ return a[Math.floor(Math.random()*a.length)]; }
-
 function getColor(){ return rand(noteColors); }
 function getPin(c){ let p; do{ p=rand(pinColors);}while(p===c); return p; }
 
@@ -29,14 +28,11 @@ function createNote(n,i){
     note.appendChild(pin);
 
     note.innerHTML+=`<b>${n.name}</b><br><small>Xem 🎁</small>`;
-
     note.onclick=()=>showPopup(n.name,n.msg);
 
     note.onmousedown = function(e){
         let shiftX=e.clientX-note.offsetLeft;
         let shiftY=e.clientY-note.offsetTop;
-
-        note.style.zIndex = 10;
 
         function move(x,y){
             note.style.left=x-shiftX+"px";
@@ -52,8 +48,6 @@ function createNote(n,i){
         document.onmouseup=()=>{
             document.removeEventListener("mousemove",onMove);
             document.onmouseup=null;
-
-            note.style.zIndex = 1;
 
             const notes=loadNotes();
             notes[i].x=parseInt(note.style.left);
@@ -100,7 +94,7 @@ function showPopup(name,msg){
 }
 function closePopup(){ popup.style.display="none"; }
 
-/* MEDIA */
+/* MEDIA STORAGE */
 function saveMedia(d){ localStorage.setItem("film9A1", JSON.stringify(d)); }
 function loadMedia(){ return JSON.parse(localStorage.getItem("film9A1")||"[]"); }
 
@@ -121,23 +115,37 @@ function renderMedia(){
     });
 }
 
-fileInput.onchange=function(){
-    const file=this.files[0];
-    if(!file) return;
+/* CLOUDINARY UPLOAD */
+fileInput.onchange = async function(){
+    const files = this.files;
+    if(!files.length) return;
 
-    const reader=new FileReader();
-    reader.onload=function(e){
-        const data=loadMedia();
+    for(let file of files){
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "YOUR_UPLOAD_PRESET");
+
+        const res = await fetch(
+            "https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/auto/upload",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const dataRes = await res.json();
+
+        const data = loadMedia();
 
         data.push({
-            src:e.target.result,
-            type:file.type.startsWith("video")?"video":"image"
+            src: dataRes.secure_url,
+            type: file.type.startsWith("video") ? "video" : "image"
         });
 
         saveMedia(data);
         renderMedia();
-    };
-    reader.readAsDataURL(file);
+    }
 };
 
 function openMedia(m){
@@ -153,7 +161,7 @@ function closeMedia(){
     mediaPopup.style.display="none";
 }
 
-/* PARTICLES */
+/* BG PARTICLES */
 const canvas=document.getElementById("bgCanvas");
 const ctx=canvas.getContext("2d");
 canvas.width=innerWidth;
